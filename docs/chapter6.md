@@ -481,8 +481,8 @@ Here are two examples using `?if`.
 The first succeeds because `(+  3 4)` is indeed `7`, and the second fails because `(>  3 4)` is false.
 
 ```lisp
-> (pat-match  '(?x ?op ?y is ?z (?if (eql (?op ?x ?y) ?z))) '(3 + 4 is 7)) => ((?Z . 7) (?Y . 4) (?OP . +) (?X . 3))
-> (pat-match  '(?x ?op ?y (?if (?op ?x ?y))) '(3 > 4)) => NIL
+> (pat-match  '(?x ?op ?y is ?z (?if (eql (funcall ?op ?x ?y) ?z))) '(3 + 4 is 7)) => ((?Z . 7) (?Y . 4) (?OP . +) (?X . 3))
+> (pat-match  '(?x ?op ?y (?if (funcall ?op ?x ?y))) '(3 > 4)) => NIL
 ```
 
 The syntax we have defined for patterns has two virtues: first, the syntax is very general, so it is easy to extend.
@@ -512,7 +512,7 @@ We will only allow symbols to be macros, so it is reasonable to store the expans
 (defun pat-match-abbrev (symbol expansion)
   "Define symbol as a macro standing for a pat-match pattern."
   (setf (get symbol 'expand-pat-match-abbrev)
-    (expand-pat-match-abbrev expansion))
+    (expand-pat-match-abbrev expansion)))
 
 (defun expand-pat-match-abbrev (pat)
   "Expand out all pattern matching abbreviations in pat."
